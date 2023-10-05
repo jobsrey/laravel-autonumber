@@ -1,8 +1,8 @@
 <?php
 
-namespace Alfa6661\AutoNumber;
+namespace Jobsrey\AutoNumber;
 
-use Alfa6661\AutoNumber\Observers\AutoNumberObserver;
+use Jobsrey\AutoNumber\Observers\AutoNumberObserver;
 
 trait AutoNumberTrait
 {
