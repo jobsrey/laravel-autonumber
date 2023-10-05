@@ -1,0 +1,33 @@
+{
+    "name": "jobsrey/laravel-autonumber",
+    "description": "",
+    "keywords": [
+    ],
+    "homepage": "https://github.com/jobsrey/laravel-autonumber",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jobsrey",
+            "email": "jobsrey@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/config": "^5.1|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/database": "^5.1|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "illuminate/support": "^5.1|^6.0|^7.0|^8.0|^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jobsrey\\AutoNumber\\": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jobsrey\\AutoNumber\\AutoNumberServiceProvider"
+            ]
+        }
+    }
+}
