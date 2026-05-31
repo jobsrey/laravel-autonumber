@@ -1,6 +1,7 @@
 {
   "name": "jobsrey/laravel-autonumber",
   "description": "",
+  "version": "2.1.0",
   "keywords": [],
   "homepage": "https://github.com/jobsrey/laravel-autonumber",
   "license": "MIT",
