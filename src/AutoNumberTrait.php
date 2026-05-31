@@ -11,7 +11,7 @@ trait AutoNumberTrait
      *
      * @return void
      */
-    public static function bootAutoNumberTrait()
+    public static function bootAutoNumberTrait(): void
     {
         static::observe(AutoNumberObserver::class);
     }
@@ -21,5 +21,5 @@ trait AutoNumberTrait
      *
      * @return array
      */
-    abstract public function getAutoNumberOptions();
+    abstract public function getAutoNumberOptions(): array;
 }

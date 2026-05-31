@@ -12,14 +12,14 @@ class AutoNumberServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/../migrations/' => database_path('migrations'),
+            __DIR__ . '/../migrations/' => database_path('migrations'),
         ], 'migrations');
 
         $this->publishes([
-            __DIR__.'/../config/autonumber.php' => config_path('autonumber.php'),
+            __DIR__ . '/../config/autonumber.php' => config_path('autonumber.php'),
         ], 'config');
     }
 
@@ -28,7 +28,7 @@ class AutoNumberServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(AutoNumberObserver::class, function ($app) {
             return new AutoNumberObserver(new AutoNumber());

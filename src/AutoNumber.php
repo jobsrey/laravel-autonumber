@@ -16,7 +16,7 @@ class AutoNumber
      * @param array $options
      * @return string
      */
-    private function generateUniqueName(array $options)
+    private function generateUniqueName(array $options): string
     {
         return md5(serialize($options));
     }
@@ -27,7 +27,7 @@ class AutoNumber
      * @param array $overrides
      * @return array
      */
-    public function evaluateConfiguration(array $overrides = [])
+    public function evaluateConfiguration(array $overrides = []): array
     {
         $config = array_merge(
             Config::get('autonumber', []),
@@ -40,7 +40,7 @@ class AutoNumber
 
         foreach ($config as $key => $value) {
             if (is_null($value)) {
-                throw new InvalidArgumentException($key.' param cannot be null');
+                throw new InvalidArgumentException($key . ' param cannot be null');
             }
         }
 
@@ -53,7 +53,7 @@ class AutoNumber
      * @param string $name
      * @return int
      */
-    private function getNextNumber($name)
+    private function getNextNumber($name): int
     {
         $autoNumber = AutoNumberModel::where('name', $name)->first();
 
@@ -77,7 +77,7 @@ class AutoNumber
      * @param Model $model
      * @return bool
      */
-    public function generate(Model $model)
+    public function generate(Model $model): bool
     {
         $attributes = [];
         foreach ($model->getAutoNumberOptions() as $attribute => $options) {

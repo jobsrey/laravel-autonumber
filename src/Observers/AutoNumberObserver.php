@@ -26,9 +26,9 @@ class AutoNumberObserver
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return null
      */
-    public function saving(Model $model)
+    public function saving(Model $model): void
     {
-        if (! config('autonumber.onUpdate', false) && $model->exists) {
+        if (!config('autonumber.onUpdate', false) && $model->exists) {
             return;
         }
 
@@ -41,7 +41,7 @@ class AutoNumberObserver
      * @param Model $model
      * @return bool
      */
-    protected function generateAutoNumber(Model $model)
+    protected function generateAutoNumber(Model $model): bool
     {
         $generated = $this->autoNumber->generate($model);
 

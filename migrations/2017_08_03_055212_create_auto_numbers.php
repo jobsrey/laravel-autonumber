@@ -11,10 +11,10 @@ class CreateAutoNumbers extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('auto_numbers', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('name', 32);
             $table->integer('number');
             $table->timestamps();
@@ -26,7 +26,7 @@ class CreateAutoNumbers extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('auto_numbers');
     }
