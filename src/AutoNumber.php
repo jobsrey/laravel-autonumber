@@ -14,11 +14,16 @@ class AutoNumber
      * Generate unique name for autonumber identity.
      *
      * @param array $options
+     * @param string|null $group
      * @return string
      */
-    private function generateUniqueName(array $options): string
+    private function generateUniqueName(array $options, ?string $group = null): string
     {
-        return md5(serialize($options));
+        $base = serialize($options);
+        if ($group !== null) {
+            $base .= serialize(['group' => $group]);
+        }
+        return md5($base);
     }
 
     /**
@@ -51,15 +56,25 @@ class AutoNumber
      * Return the next auto increment number.
      *
      * @param string $name
+     * @param string|null $group
      * @return int
      */
-    private function getNextNumber($name): int
+    private function getNextNumber($name, ?string $group = null): int
     {
-        $autoNumber = AutoNumberModel::where('name', $name)->first();
+        $query = AutoNumberModel::where('name', $name);
+
+        if ($group !== null) {
+            $query->where('group', $group);
+        } else {
+            $query->whereNull('group');
+        }
+
+        $autoNumber = $query->first();
 
         if ($autoNumber === null) {
             $autoNumber = new AutoNumberModel([
                 'name' => $name,
+                'group' => $group,
                 'number' => 1,
             ]);
         } else {
@@ -88,14 +103,23 @@ class AutoNumber
 
             $config = $this->evaluateConfiguration($options);
 
+            // Resolve group value
+            $group = null;
+            if (isset($config['group'])) {
+                $group = is_callable($config['group'])
+                    ? call_user_func($config['group'], $model)
+                    : $config['group'];
+            }
+
             $uniqueName = $this->generateUniqueName(
                 array_merge(
                     ['class' => get_class($model)],
-                    Arr::except($config, ['onUpdate'])
-                )
+                    Arr::except($config, ['onUpdate', 'group'])
+                ),
+                $group
             );
 
-            $autoNumber = $this->getNextNumber($uniqueName);
+            $autoNumber = $this->getNextNumber($uniqueName, $group);
 
             if ($length = $config['length']) {
                 $autoNumber = str_replace('?', str_pad($autoNumber, $length, '0', STR_PAD_LEFT), $config['format']);

@@ -14,5 +14,6 @@ class AutoNumber extends Model
     protected $fillable = [
         'name',
         'number',
+        'group',
     ];
 }

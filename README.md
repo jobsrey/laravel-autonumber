@@ -203,6 +203,159 @@ class Document extends Model
 }
 ```
 
+### Group Support
+
+You can separate autonumber counters by group. This is useful when you need different sequences for different categories, branches, companies, or any other grouping criteria.
+
+#### Static Group
+
+Use a static string to create a fixed group:
+
+```php
+class Invoice extends Model
+{
+    use AutoNumberTrait;
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'number' => [
+                'format' => 'INV-?',
+                'length' => 4,
+                'group' => 'BRANCH-001',  // Static group
+            ],
+        ];
+    }
+}
+```
+
+This will generate: `INV-0001`, `INV-0002`, etc. for BRANCH-001, and separate sequences for other branches.
+
+#### Group from Model Field
+
+Use a model field to create dynamic groups:
+
+```php
+class Invoice extends Model
+{
+    use AutoNumberTrait;
+
+    protected $fillable = ['number', 'company_id', 'amount'];
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'number' => [
+                'format' => 'INV-?',
+                'length' => 4,
+                'group' => $this->company_id,  // Group by company
+            ],
+        ];
+    }
+}
+```
+
+Each company will have its own invoice sequence.
+
+#### Dynamic Group with Callable
+
+Use a callable for complex group logic:
+
+```php
+class Invoice extends Model
+{
+    use AutoNumberTrait;
+
+    protected $fillable = ['number', 'company_id', 'branch_id', 'amount'];
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'number' => [
+                'format' => 'INV-?',
+                'length' => 4,
+                'group' => fn() => $this->company_id . '-' . $this->branch_id,
+            ],
+        ];
+    }
+}
+```
+
+This creates groups like `COMPANY-001-BRANCH-A`, `COMPANY-001-BRANCH-B`, etc.
+
+#### String + Field Combination
+
+Combine static text with model fields:
+
+```php
+class Invoice extends Model
+{
+    use AutoNumberTrait;
+
+    protected $fillable = ['number', 'company_id', 'amount'];
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'number' => [
+                'format' => 'INV-?',
+                'length' => 4,
+                'group' => $this->company_id . '_test',  // Company + suffix
+            ],
+        ];
+    }
+}
+```
+
+#### Backward Compatibility
+
+Models without a `group` parameter will continue to work with a global counter:
+
+```php
+class LegacyInvoice extends Model
+{
+    use AutoNumberTrait;
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'number' => [
+                'format' => 'INV-?',
+                'length' => 4,
+                // No group parameter - uses global counter
+            ],
+        ];
+    }
+}
+```
+
+#### Multiple Groups with Multiple Fields
+
+You can use different groups for different autonumber fields:
+
+```php
+class Order extends Model
+{
+    use AutoNumberTrait;
+
+    public function getAutoNumberOptions(): array
+    {
+        return [
+            'order_number' => [
+                'format' => 'ORD-?',
+                'length' => 6,
+                'group' => $this->company_id,
+            ],
+            'reference' => [
+                'format' => 'REF-?',
+                'length' => 8,
+                'group' => fn() => $this->company_id . '-' . $this->region_id,
+            ],
+        ];
+    }
+}
+```
+
 ## Configuration Options
 
 ### format
@@ -228,6 +381,15 @@ Whether to regenerate the autonumber when the model is updated.
 - Type: `bool`
 - Default: `false`
 - Note: When `false`, autonumbers are only generated on model creation
+
+### group
+
+The group identifier for separating counters per group.
+
+- Type: `string` or `callable`
+- Default: `null`
+- Example: `'group' => $this->company_id` or `'group' => fn() => $this->company_id . '-' . $this->branch_id`
+- Note: If `null`, the counter is global per model. Each group maintains its own sequence.
 
 ## License
 
